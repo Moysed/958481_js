@@ -33,8 +33,10 @@
         
         myObstacle = new component(10,200,"green",300,myGameArea.canvas.height - 100,myGameArea.canvas.width , myGameArea.canvas.height , false);
         myObstacle1 = new component(10,100,"green",300, 0 ,myGameArea.canvas.width , myGameArea.canvas.height , true);
-        myObstacle2 = new component(10, 100, "green", 400, myGameArea.canvas.height - 100, myGameArea.canvas.width, myGameArea.canvas.height, false)
-        myObstacle3 = new component(10, 75, "green", 400, 0, myGameArea.canvas.width, myGameArea.canvas.height, true)
+        myObstacle2 = new component(10, 100, "green", 450, myGameArea.canvas.height - 100, myGameArea.canvas.width, myGameArea.canvas.height, false)
+        myObstacle3 = new component(10, 75, "green", 450, 0, myGameArea.canvas.width, myGameArea.canvas.height, true)
+        myObstacle4 = new component(10, 100, "green", 600, myGameArea.canvas.height - 100, myGameArea.canvas.width, myGameArea.canvas.height, false)
+        myObstacle5 = new component(10, 75, "green", 600, 0, myGameArea.canvas.width, myGameArea.canvas.height, true)
       }
 
       var myGameArea = {
@@ -117,7 +119,7 @@
         this.x -= 1.5;
         if(this.x < 0){
           this.x = 500; 
-          this.height = getRandomInt(120);
+          this.height = getRandomInt(125);
           if(isReverse){
               this.y = 0;
           }else
@@ -134,7 +136,7 @@
  }
 
       function updatesGameArea(){
-        if(myGamePiece.crashWith(myObstacle) || myGamePiece.crashWith(myObstacle1) || myGamePiece.crashWith(myObstacle2) || myGamePiece.crashWith(myObstacle3)){
+        if(myGamePiece.crashWith(myObstacle) || myGamePiece.crashWith(myObstacle1) || myGamePiece.crashWith(myObstacle2) || myGamePiece.crashWith(myObstacle3) || myGamePiece.crashWith(myObstacle4) || myGamePiece.crashWith(myObstacle5)){
           myGameArea.stop();
         } else{
           myGameArea.clear();
@@ -146,6 +148,10 @@
         myObstacle2.move();
         myObstacle3.update();
         myObstacle3.move();
+        myObstacle4.update();
+        myObstacle4.move();
+        myObstacle5.update();
+        myObstacle5.move();
         // if(myGameArea.x && myGameArea.y){
         //   myGamePiece.x = myGameArea.x;
         //   myGamePiece.y = myGameArea.y;
