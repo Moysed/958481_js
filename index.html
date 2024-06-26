@@ -7,11 +7,186 @@
     <title>My Website</title>
     <link rel="stylesheet" href="./style.css">
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
+    <style> 
+      canvas {
+        border : 1px solid #d3d3d3;
+        background-color: #f1f1f1;
+      }
+
+      #reset{
+        position: absolute;
+        top: 25%;
+        left : 10%
+        
+      }
+    
+    </style>
   </head>
-  <body>
-    <main>
-        <h1>Welcome to My Website</h1>  
-    </main>
-	<script src="index.js"></script>
+  <body onload="startGame()">
+    <div id="reset" style="display: none;"><button onclick="reset()">Restart</button></div>
+    <script>
+      var myGamePiece;
+      var myObstacle;
+      function startGame(){
+        myGameArea.start();
+        myGamePiece = new component(30,30,"red",10,120,myGameArea.canvas.width , myGameArea.canvas.height , true);
+        
+        myObstacle = new component(10,200,"green",300,myGameArea.canvas.height - 100,myGameArea.canvas.width , myGameArea.canvas.height , false);
+        myObstacle1 = new component(10,100,"green",300, 0 ,myGameArea.canvas.width , myGameArea.canvas.height , true);
+        myObstacle2 = new component(10, 100, "green", 400, myGameArea.canvas.height - 100, myGameArea.canvas.width, myGameArea.canvas.height, false)
+        myObstacle3 = new component(10, 75, "green", 400, 0, myGameArea.canvas.width, myGameArea.canvas.height, true)
+      }
+
+      var myGameArea = {
+        canvas : document.createElement("canvas"),
+        start : function(){
+          this.canvas.width =480;
+          this.canvas.height =270;
+          this.canvas.style.cursor = "none"; 
+          this.context = this.canvas.getContext("2d");
+          document.body.insertBefore(this.canvas,document.body.childNodes[0]);
+          this.interval = setInterval(updatesGameArea , 10);
+          window.addEventListener('keydown',function(e){
+            myGameArea.key = e.keyCode;
+          })
+
+          window.addEventListener('keyup',function(e){
+            myGameArea.key = false;
+          })
+
+          window.addEventListener('mousemove',function(c){
+            myGamePiece.x = c.pageX;
+            myGamePiece.y = c.pageY;
+          })
+
+          window.addEventListener('touchmove',function(e){
+            myGamePiece.x = e.touches[0].screenX;
+            myGamePiece.y = e.touches[0],screenY;
+          })
+        },
+        clear : function(){
+          this.context.clearRect(0,0,this.canvas.width , this.canvas.height);
+        },
+        stop : function(){
+          clearInterval(this.interval);
+          const resetbut = document.getElementById("reset");
+          resetbut.style.display = "block";
+          this.canvas.style.cursor = "pointer";
+          resetbut.addEventListener("click",(e)=>{
+            location.reload();
+          })
+        }
+        
+      }
+      
+
+      function component(width,height,color,x,y, canvasWidth,canvasHeight , isReverse){
+        this.width = width;
+        this.height = height;
+        this.speedX = 0;
+        this.speedY = 0;
+        this.x = x;
+        this.y = y;
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(this.x,this.y,this.width,this.height);
+        this.update = function(){
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(this.x,this.y,this.width,this.height);
+        },
+        this.newPos = function(){
+        this.x += this.speedX;
+        this.y += this.speedY;
+      },this.crashWith = function(otherobj){
+        var myLeft = this.x;
+        var myRight = this.x + (this.width);
+        var myTop = this.y;
+        var myBottom = this.y + (this.height);
+        var otherleft =otherobj.x;
+        var otherright = otherobj.x + (otherobj.width);
+        var othertop = otherobj.y;
+        var otherBottom = otherobj.y + (otherobj.height);
+        var crash = true;
+        if((myBottom < othertop) || (myTop > otherBottom) || (myRight < otherleft) || (myLeft > otherright)){
+          crash = false;  
+        }
+        return crash;
+      }
+      this.move = function(){
+        this.x -= 1.5;
+        if(this.x < 0){
+          this.x = 500; 
+          this.height = getRandomInt(120);
+          if(isReverse){
+              this.y = 0;
+          }else
+          {
+            this.y = canvasHeight - this.height;
+          }
+        }
+      }
+        
+      }
+
+      function getRandomInt(max) {
+     return Math.floor(Math.random() * max);
+ }
+
+      function updatesGameArea(){
+        if(myGamePiece.crashWith(myObstacle) || myGamePiece.crashWith(myObstacle1) || myGamePiece.crashWith(myObstacle2) || myGamePiece.crashWith(myObstacle3)){
+          myGameArea.stop();
+        } else{
+          myGameArea.clear();
+        myObstacle.update();
+        myObstacle1.update();
+        myObstacle.move();
+        myObstacle1.move();
+        myObstacle2.update();
+        myObstacle2.move();
+        myObstacle3.update();
+        myObstacle3.move();
+        // if(myGameArea.x && myGameArea.y){
+        //   myGamePiece.x = myGameArea.x;
+        //   myGamePiece.y = myGameArea.y;
+        // }
+        if(myGameArea.key && myGameArea.key == 37){myGamePiece.speedX = -1;}
+        if(myGameArea.key && myGameArea.key == 39){myGamePiece.speedX = 1;}
+        if(myGameArea.key && myGameArea.key == 38){myGamePiece.speedY = -1;}
+        if(myGameArea.key && myGameArea.key == 40){myGamePiece.speedY = 1;}
+        myGamePiece.newPos();
+        myGamePiece.update();
+        }
+       
+      }
+
+      function moveUp(){
+        myGamePiece.speedY -= 1;
+      }
+
+      function moveDown(){
+        myGamePiece.speedY += 1;
+      }
+
+      function moveLeft(){
+        myGamePiece.speedX -=1;
+      }
+
+      function moveRight(){
+        myGamePiece.speedX += 1;
+      }
+
+      
+      
+      
+    </script>
+    <p>We have created a game area!(or at last an empthy canvas)</p>
+    <button onclick="moveUp()">Up</button>
+    <button onclick="moveDown()">Down</button>
+    <button onclick="moveLeft()">Left</button>
+    <button onclick="moveRight()">Right</button>
+    
+    
+
   </body>
 </html>
